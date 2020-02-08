@@ -22,7 +22,7 @@ os.chdir(BASE_DIR)
 app=Flask(__name__)
 app.config["SECRET_KEY"]="I am a secret"
 
-class searchForm(FlaskForm):
+class dataSubmitForm(FlaskForm):
     db=DB.initDB()
     db.connectDB()
     rms = [(i[0],i[0]) for i in db.runQuery("SELECT name FROM team;")["data"]]
@@ -34,10 +34,7 @@ class searchForm(FlaskForm):
     total  = TextField(label="Total")
     status = SelectField("Status", choices=[("Won","Won"), ("Lost","Lost")])
     submit = SubmitField("Submit")
-    def validate_sales(form,field):
-        if len(field.data)==0:
-            raise ValidationError("Select a Sales RM")
-    
+      
     def validate_start(form,field):
         if field.data is None:
             raise ValidationError("Please select a start date")
@@ -66,21 +63,27 @@ def homepage():
     data[4] = db.runQuery("select year(completion_date) as year, sum(total) as total from transactions where year(completion_date)>0 group by year(completion_date) ;")
     team   = db.runQuery("SELECT name from team;")
     db.closeConnect()
-    form = searchForm()
+    form = dataSubmitForm()
+    
+    
     for i in range(0, len(data)):
         data[i] = pd.DataFrame(data[i]["data"],columns=data[i]["cols"])
         data[i] = data[i].to_json(orient="records")
-        
-    if form.validate_on_submit():
-        db = DB.initDB()
-        db.connectDB()
-        idx = db.runQuery("SELECT max(id) from transactions;")["data"][0][0]
-        values=(str(idx+1),request.form.get("sales"), request.form.get("start"), request.form.get("end"), request.form.get("total"), request.form.get("status"))
-        db.cur.execute("INSERT INTO transactions (id,name,start_date, completion_date, total,status) VALUES (%s,%s,%s,%s,%s,%s)",values)
-        db.con.commit()
-        db.closeConnect()
-        
-        return redirect("/")
+    
+    
+    if request.method=="POST":
+        if request.form.get("btn")=="Save":
+            print(request.form.get("select"))
+        else:
+            if form.validate_on_submit():
+                db = DB.initDB()
+                db.connectDB()
+                idx = db.runQuery("SELECT max(id) from transactions;")["data"][0][0]
+                values=(str(idx+1),request.form.get("sales"), request.form.get("start"), request.form.get("end"), request.form.get("total"), request.form.get("status"))
+                db.cur.execute("INSERT INTO transactions (id,name,start_date, completion_date, total,status) VALUES (%s,%s,%s,%s,%s,%s)",values)
+                db.con.commit()
+                db.closeConnect()
+                return redirect("/")
     return render_template("index.html", team=team["data"], data1=data[0], data2=data[1], data3=data[2], data4=data[3], data5=data[4], form=form)
  
   

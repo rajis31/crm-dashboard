@@ -46,12 +46,15 @@
 
         </form>
 
-        <select name="" id="select">
-            <option value="All">All</option>
-            {% for i in team %}
-            <option value={{i[0]}}>{{i[0]}}</option>
-            {% endfor %}
-        </select>
+        <form action="/" method="POST">
+            <select name="select" id="select" >
+                <option value="All">All</option>
+                {% for i in team %}
+                <option value={{i[0]}}>{{i[0]}}</option>
+                {% endfor %}
+            </select>
+           <input type="submit" value="Save"  name="btn">
+        </form>
 
         <div id="main">
             <div id="chart1">
