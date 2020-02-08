@@ -24,21 +24,17 @@ function chart1(data) {
         .append("g")
         .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
 
-
-
     //define the axes
     let x = d3.scaleBand()
         .domain(data.map(d => d.name))
         .range([0, width])
         .padding(0.1);
 
-
     let y = d3.scaleLinear()
         .domain([0, d3.max(data, d => d.total_sold) + 1000])
         .range([height, 0]);
 
-
-    //Create rectangles 
+    //Create Chart Bars
     svg.selectAll(".bar")
         .data(data)
         .enter()
@@ -49,16 +45,16 @@ function chart1(data) {
         .attr("y", d => y(d.total_sold))
         .attr("height", d => height - y(d.total_sold));
 
-    // add the x Axis
+    // Add the x Axis
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x));
 
-    // add the y Axis
+    // Add the y Axis
     svg.append("g")
         .call(d3.axisLeft(y));
 
-    // add title 
+    // Add title 
     svg.append("text")
         .attr("x", width / 2)
         .attr("y", 0 - margins.top / 2)
@@ -67,37 +63,63 @@ function chart1(data) {
         .style("font-weight", "bold")
         .style("font", "arial")
         .style("text-decoration", "underline")
+        .style("text-underline-position", "under")
         .text("Total Sales by Sales Person");
+
+    // add X Axis title
+    svg.append("text")
+        .attr("x", (width - 50) / 2)
+        .attr("y", height + margins.top + margins.bottom - 30)
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .text("Sales RM");
+
+    // add Y Axis Title
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -(height - 100) / 2)
+        .attr("y", -50)
+        .attr("dy", "0.71em")
+        .style("font-weight", "bold")
+        .attr("text-anchor", "end")
+        .attr("font-size", "12px")
+        .style("font-weight", "bold")
+        .text("Total Sold");
 }
 
 //bar chart showing # of transactions won and lost 
 function chart2(data, columns) {
-    let svg = d3.select("#chart2").select("svg"),
-        margin = {
-            top: 30,
-            right: 30,
-            bottom: 30,
-            left: 30
-        },
-        width = +svg.attr("width") - margin.left - margin.right,
-        height = +svg.attr("height") - margin.top - margin.bottom,
-        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // set x scale
+    // Create empty SVG Element
+    let svg = d3.select("#chart2").select("svg")
+
+    // Define Chart Dimensions
+    let margin = {
+        top: 30,
+        right: 30,
+        bottom: 30,
+        left: 30
+    };
+
+    let width = +svg.attr("width") - margin.left - margin.right;
+    let height = +svg.attr("height") - margin.top - margin.bottom;
+    let g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    // Create X Axis scale
     let x = d3.scaleBand()
         .rangeRound([0, width])
         .paddingInner(0.05)
         .align(0.1);
 
-    // set y scale
+    // Create Y Axis scale
     let y = d3.scaleLinear()
         .rangeRound([height, 0]);
 
-    // set the colors
+    // Create colors for the stacks
     let z = d3.scaleOrdinal()
         .range(["blue", "red"]);
 
-    // load the csv and create the chart
+    // Add Total column to data
     function add_total(d, i, columns) {
         for (i = 0, t = 0; i < columns.length; ++i) {
             t += d[columns[i]] = +d[columns[i]];
@@ -106,12 +128,17 @@ function chart2(data, columns) {
         return d;
     }
 
+    // Map the total column to data array using .map function
     data = data.map((d, idx) => add_total(d, idx, ["won", "lost"]))
 
     let keys = columns;
+
+    // Sort Data in descending order which is represented on the chart
     data.sort(function (a, b) {
         return b.total - a.total;
     });
+
+    // Map data to axes
     x.domain(data.map(function (d) {
         return d.name;
     }));
@@ -120,6 +147,7 @@ function chart2(data, columns) {
     })]).nice();
     z.domain(keys);
 
+    // Create Chart
     g.append("g")
         .selectAll("g")
         .data(d3.stack().keys(keys)(data))
@@ -181,7 +209,8 @@ function chart2(data, columns) {
         .attr("transform", function (d, i) {
             return "translate(0," + i * 20 + ")";
         });
-    // add title 
+
+    // add Chart Title
     g.append("text")
         .attr("x", width / 2)
         .attr("y", 0 - margin.top / 2)
@@ -192,7 +221,7 @@ function chart2(data, columns) {
         .style("text-decoration", "underline")
         .text("Deals Won and Lost by Sales Person");
 
-
+    // Append Legend to Top Right
     legend.append("rect")
         .attr("x", width - 19)
         .attr("width", 19)
@@ -207,7 +236,7 @@ function chart2(data, columns) {
             return d;
         });
 
-    // Prep the tooltip bits, initial display is hidden
+    // Create Tooltips when user hovers the bars
     let tooltip = svg.append("g")
         .attr("class", "tooltip")
         .style("display", "none");
@@ -233,10 +262,10 @@ function chart2(data, columns) {
 function chart3(data) {
     // Set the chart dimensions 
     let margins = {
-        top: 20,
+        top: 30,
         right: 20,
         bottom: 30,
-        left: 40
+        left: 60
     };
     let width = 500 - margins.left - margins.right;
     let height = 500 - margins.top - margins.bottom;
@@ -273,7 +302,7 @@ function chart3(data) {
 
     // add the x Axis
     svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + (height) + ")")
         .call(d3.axisBottom(x).tickFormat(d => d + "%"));
 
     // add the y Axis
@@ -283,13 +312,33 @@ function chart3(data) {
     // add title 
     svg.append("text")
         .attr("x", width / 2)
-        .attr("y", 0 - (margins.top / 2)+10)
+        .attr("y", 0 - (margins.top / 2) + 10)
         .attr("text-anchor", "middle")
         .style("font-size", "14px")
         .style("font-weight", "bold")
         .style("font", "arial")
         .style("text-decoration", "underline")
         .text("Total Sales to Goal Met");
+
+    // add X Axis title
+    svg.append("text")
+        .attr("x", width - 50)
+        .attr("y", height + margins.top + margins.bottom - 65)
+        .style("font-size", "12px")
+        .style("font-weight", "bold")
+        .text("% Goal");
+
+    // add Y Axis Title
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -(height - 100) / 2)
+        .attr("y", -45)
+        .attr("dy", "0.71em")
+        .style("font-weight", "bold")
+        .attr("text-anchor", "end")
+        .attr("font-size", "12px")
+        .style("font-weight", "bold")
+        .text("Sales RM");
 
 }
 
@@ -368,9 +417,9 @@ function chart4(data) {
         .style("font-weight", "bold")
         .style("font", "arial")
         .style("text-decoration", "underline")
-        .text("Avg Days per deal by Sales Person");
+        .text("Avg Time to Completion");
 
-    // add axes title
+    // add X Axis title
     svg.append("text")
         .attr("x", (width - 50) / 2)
         .attr("y", height + margins.top + margins.bottom - 30)
@@ -378,9 +427,10 @@ function chart4(data) {
         .style("font-weight", "bold")
         .text("Sales Person");
 
+    // add Y Axis Title
     svg.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2)
+        .attr("x", -(height - 100) / 2)
         .attr("y", -40)
         .attr("dy", "0.71em")
         .style("font-weight", "bold")
@@ -422,6 +472,7 @@ function chart5(data) {
         .domain([0, d3.max(data, d => d.total)])
         .range([height, 0])
 
+    // Append Line to Chart
     let line = d3.line()
         .x(d => xscale(d.year))
         .y(d => yscale(d.total))
@@ -478,9 +529,10 @@ function chart5(data) {
         .style("font-weight", "bold")
         .text("Year");
 
+    // add Y Axis Title
     svg.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2)
+        .attr("x", -(height - 100) / 2)
         .attr("y", -60)
         .attr("dy", "0.71em")
         .style("font-weight", "bold")

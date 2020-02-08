@@ -28,32 +28,39 @@ body {
     margin-bottom: 0px;
 }
 
+
+/*** Create CSS Grid ***/
 #main {
     width: 960px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-gap: 5em;
-    
+
 }
 
 .axis .domain {
     display: none;
 }
 
-.bar {
-    fill: steelblue;
+/*** Style bar charts ***/
+
+#chart1 .bar {
+    fill: #2ECC40;
 }
 
-/* Style the lines by removing the fill and applying a stroke */
+#chart3 .bar {
+    fill: slateblue;
+}
+
+/*** Style the Line Charts both line and points ***/
 .line {
     fill: none;
-    stroke: #ffab00;
+    stroke: #0074D9;
     stroke-width: 3;
 }
 
-/* Style the dots by assigning a fill and stroke */
 .dot {
-    fill: #ffab00;
+    fill: #0074D9;
     stroke: #fff;
 }

@@ -11,41 +11,49 @@ from wtforms.fields.html5 import DateField
 import re 
 import datetime as dt
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__name__))
+
+# Import database class from backend folder
 os.chdir(os.path.join(BASE_DIR,"backend"))
-
 from backend import db as DB
-
 os.chdir(BASE_DIR)
 
- 
+# Initialize Flask App 
 app=Flask(__name__)
 app.config["SECRET_KEY"]="I am a secret"
 
+#Create form so user can add data to database 
 class dataSubmitForm(FlaskForm):
+    
+    # Grab the various sales people for dropdown menu
     db=DB.initDB()
     db.connectDB()
     rms = [(i[0],i[0]) for i in db.runQuery("SELECT name FROM team;")["data"]]
     db.closeConnect()
+    
+    # Create different Form Fields
     sales= SelectField("Sales Person", choices=rms)
-    # HTML5 Date Picker
     start  = DateField("Start Date", format="%Y-%m-%d")
     end    = DateField("End Date", format="%Y-%m-%d")
     total  = TextField(label="Total")
     status = SelectField("Status", choices=[("Won","Won"), ("Lost","Lost")])
     submit = SubmitField("Submit")
-      
+    
+    # Check if Start Date is selected
     def validate_start(form,field):
         if field.data is None:
             raise ValidationError("Please select a start date")
         if form.end.data is not None and field.data is not None:
             if form.end.data < field.data:
                 raise ValidationError("Start date needs to be before the end date")
-    
+            
+    # Check if End Date is selected
     def validate_end(form,field):
         if field.data is None:
             raise ValidationError("Please select a End date")
-
+    
+    # Check if the total sales amount is valid
     def validate_total(form,field):
         if field.data is None  or re.search("[a-zA-Z]+",field.data) is not None  or float(field.data)<=0:
             raise ValidationError("Total value entered is invalid")
@@ -53,9 +61,12 @@ class dataSubmitForm(FlaskForm):
             
 @app.route("/", methods=["GET","POST"])
 def homepage():
+    # Initialize data list which will hold dataframes of data from various datasets
     data=[0,0,0,0,0]
     db=DB.initDB()
     db.connectDB()
+    
+    # Grab data from database for various charts
     data[0] = db.runQuery("SELECT name, sum(total) as total_sold FROM transactions  where status='won' group by name;")
     data[1] = db.runQuery("SELECT name, sum(case when status='won' then 1 else 0 end) as won, sum(case when status='lost' then 1 else 0 end) as lost  FROM transactions group by name;")
     data[2] = db.runQuery("SELECT team.team_id as team_id, team.name as name, year,round((sum(total)/goal)*100,0) as met from goal join team on goal.team_id = team.team_id  join transactions on sales_rm_id = goal.team_id and year(transactions.completion_date) = goal.year where year=2019 group by team_id, year ;")
@@ -63,17 +74,24 @@ def homepage():
     data[4] = db.runQuery("select year(completion_date) as year, sum(total) as total from transactions where year(completion_date)>0 group by year(completion_date) ;")
     team   = db.runQuery("SELECT name from team;")
     db.closeConnect()
+    
+    # Create empty form class
     form = dataSubmitForm()
     
-    
+    # Convert list of dataframes to json
     for i in range(0, len(data)):
         data[i] = pd.DataFrame(data[i]["data"],columns=data[i]["cols"])
         data[i] = data[i].to_json(orient="records")
     
-    
+    # Check if a POST request was made - POST is used when something needs to be done
     if request.method=="POST":
+        
+        # Check to see if user selected a sales person to filter the charts on
         if request.form.get("btn")=="Save":
+            # Update charts 
             print(request.form.get("select"))
+            
+        # Check to see if user is submitting data to the database instead
         else:
             if form.validate_on_submit():
                 db = DB.initDB()
