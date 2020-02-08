@@ -1,0 +1,59 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif;
+
+}
+
+.header {
+    font-size: 25px;
+    text-align: center;
+    vertical-align: auto;
+    font-family: 'Orbitron', sans-serif;
+    background-color: #FF851B;
+    position: absolute;
+    top: 0;
+    width: 100%;
+
+}
+
+.header>h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#main {
+    width: 960px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 5em;
+    
+}
+
+.axis .domain {
+    display: none;
+}
+
+.bar {
+    fill: steelblue;
+}
+
+/* Style the lines by removing the fill and applying a stroke */
+.line {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 3;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}

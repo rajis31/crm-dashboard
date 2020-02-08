@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>CRM Dashboard</title>
+        <link rel="stylesheet" href="../static/style.css">
+
+    </head>
+
+    <body>
+
+        <form action="" method="POST" novalidate>
+            {{ form.hidden_tag() }}
+            {{form.sales.label}}
+            {{form.sales()}}
+            {% for error in form.sales.errors %}
+                {{error}}
+            {% endfor %}
+
+            {{form.start.label}}
+            {{form.start()}}
+            {% for error in form.start.errors %}
+                    {{error}}
+            {% endfor %}   
+
+            {{form.end.label}} 
+            {{form.end()}}
+
+            {% for error in form.end.errors %}
+                    {{error}}
+            {% endfor %}   
+            {{form.total.label}}
+            {{form.total()}}
+            {% for error in form.total.errors %}
+                 <strong>{{error}} </strong>
+            {% endfor %} 
+            {{form.status.label}}
+            {{form.status()}}
+            {% for error in form.status.errors %}
+                    {{error}}
+            {% endfor %}
+            {{form.submit()}}
+
+        </form>
+
+        <select name="" id="select">
+            <option value="All">All</option>
+            {% for i in team %}
+            <option value={{i[0]}}>{{i[0]}}</option>
+            {% endfor %}
+        </select>
+
+        <div id="main">
+            <div id="chart1">
+            </div>
+
+            <div id="chart2">
+                <svg width="500" height="500"></svg>
+            </div>
+
+            <div id="chart3">
+            </div>
+
+            <div id="chart4">
+            </div>
+
+            <div id="chart5">
+            </div>
+
+        </div>
+
+
+        <script src="https://d3js.org/d3.v4.js"></script>
+        <script>
+            let data1 = {{ data1 | safe }};
+            let data2 = {{ data2 | safe }};
+            let data3 = {{ data3 | safe }};
+            let data4 = {{ data4 | safe }};
+            let data5 = {{ data5 | safe }};
+
+        </script>
+        <script src="{{url_for('static', filename='charts.js')}}"></script>
+
+
+    </body>
+
+</html>
