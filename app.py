@@ -11,7 +11,7 @@ from wtforms.fields.html5 import DateField
 import re 
 import datetime as dt
 
-
+# Find the base directory of app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__name__))
 
 # Import database class from backend folder
@@ -25,7 +25,6 @@ app.config["SECRET_KEY"]="I am a secret"
 
 #Create form so user can add data to database 
 class dataSubmitForm(FlaskForm):
-    
     # Grab the various sales people for dropdown menu
     db=DB.initDB()
     db.connectDB()
@@ -89,7 +88,6 @@ def homepage():
     
     # Check if a POST request was made - POST is used when something needs to be done
     if request.method=="POST":
-        
         # Check to see if user selected a sales person to filter the charts on
         if request.form.get("btn")=="Filter":
             # Update charts 
@@ -101,7 +99,6 @@ def homepage():
                 data=[0,0,0,0,0]
                 db=DB.initDB()
                 db.connectDB()
-                
                 # Grab data from database for various charts
                 data[0] = db.runQuery("SELECT name, sum(total) as total_sold FROM transactions  where status='won' and name = '{0}' group by name;".format(name))
                 data[1] = db.runQuery("SELECT name, sum(case when status='won' then 1 else 0 end) as won, sum(case when status='lost' then 1 else 0 end) as lost  FROM transactions where name='{0}' group by name;".format(name))
@@ -115,8 +112,6 @@ def homepage():
                     data[i] = pd.DataFrame(data[i]["data"],columns=data[i]["cols"])
                     data[i] = data[i].to_json(orient="records")
                 db.closeConnect()
-    
-            
         # Check to see if user is submitting data to the database instead
         else:
             if form.validate_on_submit():
@@ -132,6 +127,5 @@ def homepage():
                 pass
     return render_template("index.html", team=team["data"], data1=data[0], data2=data[1], data3=data[2], data4=data[3], data5=data[4], form=form)
  
-  
 if "__main__"==__name__:
     app.run(port=5000,debug=True)    
