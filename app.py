@@ -128,4 +128,4 @@ def homepage():
     return render_template("index.html", team=team["data"], data1=data[0], data2=data[1], data3=data[2], data4=data[3], data5=data[4], form=form)
  
 if "__main__"==__name__:
-    app.run(port=5000,debug=True)    
+    app.run(port=5010,debug=True)    
