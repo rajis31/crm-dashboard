@@ -10,9 +10,9 @@ class initDB:
 
     def initialzeDB(self):
         self.connectDB()
-        self.cur.execute("DROP DATABASE CRM1;")
-        self.cur.execute("CREATE DATABASE CRM1;")
-        self.cur.execute("USE CRM1;")
+        self.cur.execute("DROP DATABASE CRM;")
+        self.cur.execute("CREATE DATABASE CRM;")
+        self.cur.execute("USE CRM;")
         
         # Create Team table for sales people
         self.cur.execute(
@@ -63,12 +63,10 @@ class initDB:
             
             
         data = pd.read_excel("data.xlsx", sheet_name="transactions",header=0)
-        data["start_date"] = data["start_date"].astype(str)
-        data["completion_date"] = data["completion_date"].astype(str)
-       
-        
+        data["start_date"]=data["start_date"].dt.strftime("%Y-%m-%d")
+        data["completion_date"]=data["completion_date"].dt.strftime("%Y-%m-%d")
         data=data.values
-        print(data)
+        
         for i in data:
             self.cur.execute("""
                 INSERT INTO transactions (id,sales_rm_id, name, start_date, completion_date, total, status) VALUES (%s,%s,%s,%s,%s,%s,%s)
@@ -89,7 +87,7 @@ class initDB:
         self.closeConnect()
 
     def connectDB(self):
-        self.con = sql.connect(host="localhost", user = "root", password = "bonfire09", db = "crm1")
+        self.con = sql.connect(host="localhost", user = "root", password = "bonfire09", db = "CRM")
         self.cur = self.con.cursor()
     
     def runQuery(self,query):
@@ -114,7 +112,7 @@ class initDB:
 
 if __name__=="__main__":
     db=initDB()
-    #db.initialzeDB()
+    db.initialzeDB()
     #db.connectDB()
     #db.closeConnect()
 
