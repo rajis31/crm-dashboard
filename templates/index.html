@@ -12,49 +12,74 @@
 
     <body>
 
-        <form action="" method="POST" novalidate>
+        <div class="header">
+            <h2>CRM Dashboard V 1.0</h2>
+            <form action="/" method="POST" class="filter-form">
+                <select name="select" id="select" >
+                    <option value="All">All</option>
+                    {% for i in team %}
+                    <option value={{i[0]}}>{{i[0]}}</option>
+                    {% endfor %}
+                </select>
+               <input type="submit" value="Filter"  name="btn" class="filter-submit">
+            </form>
+        </div>
+
+        <button onclick="openForm()" class="open-button">Data Form</button>
+
+        <div class="popup" id="data-input"> 
+        <form action="" method="POST" novalidate class="form-container"> 
+            <div class="intro"><p>This is a form used to submit data to the database which will update <br> the charts upon refresh.</p></div>
             {{ form.hidden_tag() }}
+
             {{form.sales.label}}
             {{form.sales()}}
-            {% for error in form.sales.errors %}
-                {{error}}
-            {% endfor %}
-
+            <br>
+        
             {{form.start.label}}
             {{form.start()}}
+            
+            {% if form.start.errors %}
+            <br>
             {% for error in form.start.errors %}
-                    {{error}}
-            {% endfor %}   
+                    <span style="color:red; font-size:12px; font-weight:bold; margin-left: 5px; font-family: sans-serif;" >{{error}}</span>
+            {% endfor %} 
+        {% endif %} 
 
+            <br>
             {{form.end.label}} 
             {{form.end()}}
+           
+            {% if form.end.errors %}
+                <br>
+                {% for error in form.end.errors %}
+                        <span style="color:red; font-size:12px; font-weight:bold; margin-left: 5px; font-family: sans-serif;" >{{error}}</span>
+                {% endfor %} 
+            {% endif %}
 
-            {% for error in form.end.errors %}
-                    {{error}}
-            {% endfor %}   
+            <br>
             {{form.total.label}}
             {{form.total()}}
-            {% for error in form.total.errors %}
-                 <strong>{{error}} </strong>
-            {% endfor %} 
+          
+            {% if form.total.errors %}
+                <br>
+                {% for error in form.total.errors %}
+                        <span style="color:red; font-size:12px; font-weight:bold; margin-left: 5px; font-family: sans-serif;" >{{error}}</span>
+                {% endfor %} 
+            {% endif %}
+
+            <br>
             {{form.status.label}}
             {{form.status()}}
-            {% for error in form.status.errors %}
-                    {{error}}
-            {% endfor %}
-            {{form.submit()}}
+            <br>
+           
+            {{form.submit(class_="submit-data")}}
 
+            <button type="button" class="btn close" onclick="closeForm()">Close</button>
         </form>
+    </div>
 
-        <form action="/" method="POST">
-            <select name="select" id="select" >
-                <option value="All">All</option>
-                {% for i in team %}
-                <option value={{i[0]}}>{{i[0]}}</option>
-                {% endfor %}
-            </select>
-           <input type="submit" value="Save"  name="btn">
-        </form>
+       
 
         <div id="main">
             <div id="chart1">
@@ -78,12 +103,23 @@
 
         <script src="https://d3js.org/d3.v4.js"></script>
         <script>
+
+            // Pass the data into variables from flask
             let data1 = {{ data1 | safe }};
             let data2 = {{ data2 | safe }};
             let data3 = {{ data3 | safe }};
             let data4 = {{ data4 | safe }};
             let data5 = {{ data5 | safe }};
 
+            // Create functions for the data input form 
+
+            function openForm(){
+                document.getElementById("data-input").style.display="block";
+            }
+
+            function closeForm(){
+                document.getElementById("data-input").style.display="none";
+            }
         </script>
         <script src="{{url_for('static', filename='charts.js')}}"></script>
 

@@ -1,4 +1,4 @@
-from flask import Flask,render_template,redirect, request
+from flask import Flask,render_template,redirect, request, url_for
 import sqlite3 as sql
 import numpy as np
 import pandas as pd
@@ -55,8 +55,12 @@ class dataSubmitForm(FlaskForm):
     
     # Check if the total sales amount is valid
     def validate_total(form,field):
-        if field.data is None  or re.search("[a-zA-Z]+",field.data) is not None  or float(field.data)<=0:
+        if field.data is None  or re.search("[a-zA-Z]+",field.data) is not None:
             raise ValidationError("Total value entered is invalid")
+        elif field.data=="":
+            raise ValidationError("Please enter a value")
+        elif float(field.data)<=0:
+            raise ValidationError("Total cannot be less then 0")
         
             
 @app.route("/", methods=["GET","POST"])
@@ -87,9 +91,31 @@ def homepage():
     if request.method=="POST":
         
         # Check to see if user selected a sales person to filter the charts on
-        if request.form.get("btn")=="Save":
+        if request.form.get("btn")=="Filter":
             # Update charts 
-            print(request.form.get("select"))
+            if request.form.get("select")=="All":
+                print("All has been selected")
+            else:
+                name=request.form.get("select")
+                print(type(name))
+                data=[0,0,0,0,0]
+                db=DB.initDB()
+                db.connectDB()
+                
+                # Grab data from database for various charts
+                data[0] = db.runQuery("SELECT name, sum(total) as total_sold FROM transactions  where status='won' and name = '{0}' group by name;".format(name))
+                data[1] = db.runQuery("SELECT name, sum(case when status='won' then 1 else 0 end) as won, sum(case when status='lost' then 1 else 0 end) as lost  FROM transactions where name='{0}' group by name;".format(name))
+                data[2] = db.runQuery("SELECT team.team_id as team_id, team.name as name, year,round((sum(total)/goal)*100,0) as met from goal join team on goal.team_id = team.team_id  join transactions on sales_rm_id = goal.team_id and year(transactions.completion_date) = goal.year where year=2019 and team.name='{0}' group by team_id, year;".format(name))
+                data[3] = db.runQuery("select name, avg(completion_date - start_date) as days from transactions where name='{0}' group by name;".format(name))
+                data[4] = db.runQuery("select year(completion_date) as year, sum(total) as total from transactions where year(completion_date)>0 and name='{0}' group by year(completion_date);".format(name))
+                team   = db.runQuery("SELECT name from team;")
+                
+                 # Convert list of dataframes to json
+                for i in range(0, len(data)):
+                    data[i] = pd.DataFrame(data[i]["data"],columns=data[i]["cols"])
+                    data[i] = data[i].to_json(orient="records")
+                db.closeConnect()
+    
             
         # Check to see if user is submitting data to the database instead
         else:
@@ -101,7 +127,9 @@ def homepage():
                 db.cur.execute("INSERT INTO transactions (id,name,start_date, completion_date, total,status) VALUES (%s,%s,%s,%s,%s,%s)",values)
                 db.con.commit()
                 db.closeConnect()
-                return redirect("/")
+                return redirect(url_for("homepage"))
+            else:
+                pass
     return render_template("index.html", team=team["data"], data1=data[0], data2=data[1], data3=data[2], data4=data[3], data5=data[4], form=form)
  
   

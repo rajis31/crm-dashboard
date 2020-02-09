@@ -9,7 +9,7 @@ function chart1(data) {
     let margins = {
         top: 30,
         bottom: 30,
-        left: 50,
+        left: 55,
         right: 30
     };
     // define chart dimensions 
@@ -78,7 +78,7 @@ function chart1(data) {
     svg.append("text")
         .attr("transform", "rotate(-90)")
         .attr("x", -(height - 100) / 2)
-        .attr("y", -50)
+        .attr("y", -55)
         .attr("dy", "0.71em")
         .style("font-weight", "bold")
         .attr("text-anchor", "end")

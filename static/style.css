@@ -11,26 +11,41 @@ body {
 
 }
 
-.header {
-    font-size: 25px;
-    text-align: center;
-    vertical-align: auto;
-    font-family: 'Orbitron', sans-serif;
-    background-color: #FF851B;
-    position: absolute;
-    top: 0;
+/*** Format the heading ***/
+.header{
     width: 100%;
-
+    height: 40px;
+    line-height: 35px;
+    text-align: center;
+    background-color:#0074D9;
+    color: white;
+    margin-top: -20px;
+    padding-bottom: 2px;
 }
 
-.header>h2 {
-    margin-top: 0px;
-    margin-bottom: 0px;
+/*** Format the filter form ***/
+.header .filter-form{
+    position: absolute;
+    top: 0.1%;
+    left: 1%;
+}
+.filter-form .filter-submit{
+    border: none;
+    color: white;
+    background-color: #2ECC40;
+    width: 100px;
+    font-weight: bold;
+    opacity: 0.7;
 }
 
+.filter-form .filter-submit:hover{
+    opacity: 1;
+}
 
 /*** Create CSS Grid ***/
 #main {
+    margin-top: 20px;
+    margin-left: 5%;
     width: 960px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -63,4 +78,70 @@ body {
 .dot {
     fill: #0074D9;
     stroke: #fff;
+}
+
+
+/*** Format the data submission form ***/
+.intro {
+    font-size: 12px;
+    font-family: sans-serif;
+}
+
+.open-button {
+    background-color: #0074D9;
+    color: white;
+    font-weight: bold;
+    font-weight: 16px;
+    padding: 16px 20px;
+    border: none;
+    opacity: 0.8;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+}
+
+/*** Pop out form when data form button is clicked ***/
+.popup {
+    display: none;
+    position: fixed;
+    bottom: 0px;
+    right: 15px;
+    border: 2px solid black;
+    z-index: 4;
+}
+
+.form-container {
+    max-width: 500px;
+    padding: 10px;
+    background-color: white;
+}
+
+.form-container .btn {
+    background-color: #2ECC40;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.form-container .submit-data {
+    background-color: blue;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    width: 100%;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+
+/*** Darken colors when buttons hovered over ***/
+.form-container .btn:hover,
+.open-button:hover,
+.submit-data:hover {
+    opacity: 1;
 }
