@@ -20,7 +20,7 @@ from backend import db as DB
 os.chdir(BASE_DIR)
 
 # Initialize Flask App 
-app=Flask(__name__)
+app=Flask(__name__, static_folder="design")
 app.config["SECRET_KEY"]="I am a secret"
 
 #Create form so user can add data to database 

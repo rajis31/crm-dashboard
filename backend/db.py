@@ -112,7 +112,7 @@ class initDB:
 
 if __name__=="__main__":
     db=initDB()
-    db.initialzeDB()
+    #db.initialzeDB()
     #db.connectDB()
     #db.closeConnect()
 
