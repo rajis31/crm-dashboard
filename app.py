@@ -104,7 +104,7 @@ def homepage():
                 data[1] = db.runQuery("SELECT name, sum(case when status='won' then 1 else 0 end) as won, sum(case when status='lost' then 1 else 0 end) as lost  FROM transactions where name='{0}' group by name;".format(name))
                 data[2] = db.runQuery("SELECT team.team_id as team_id, team.name as name, year,round((sum(total)/goal)*100,0) as met from goal join team on goal.team_id = team.team_id  join transactions on sales_rm_id = goal.team_id and year(transactions.completion_date) = goal.year where year=2019 and team.name='{0}' group by team_id, year;".format(name))
                 data[3] = db.runQuery("select name, avg(completion_date - start_date) as days from transactions where name='{0}' group by name;".format(name))
-                data[4] = db.runQuery("select year(completion_date) as year, sum(total) as total from transactions where year(completion_date)>0 and name='{0}' group by year(completion_date);".format(name))
+                data[4] = db.runQuery("select year(completion_date) as year, sum(total) as total from transactions where year(completion_date)>1960 and name='{0}' group by year(completion_date);".format(name))
                 team   = db.runQuery("SELECT name from team;")
                 
                  # Convert list of dataframes to json
