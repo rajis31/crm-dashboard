@@ -20,7 +20,7 @@ from backend import db as DB
 os.chdir(BASE_DIR)
 
 # Initialize Flask App 
-app=Flask(__name__, static_folder="design")
+app=Flask(__name__, static_folder="static")
 app.config["SECRET_KEY"]="I am a secret"
 
 #Create form so user can add data to database 
@@ -125,7 +125,7 @@ def homepage():
                 return redirect(url_for("homepage"))
             else:
                 pass
-    return render_template("index.html", team=team["data"], data1=data[0], data2=data[1], data3=data[2], data4=data[3], data5=data[4], form=form)
+    return render_template("crm.html", team=team["data"], data1=data[0], data2=data[1], data3=data[2], data4=data[3], data5=data[4], form=form)
  
 if "__main__"==__name__:
     app.run(port=5010,debug=True)    
