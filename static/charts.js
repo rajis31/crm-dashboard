@@ -33,7 +33,7 @@ function chart1(data) {
     let y = d3.scaleLinear()
         .domain([0, d3.max(data, d => d.total_sold) + 1000])
         .range([height, 0]);
-
+        
     //Create Chart Bars
     svg.selectAll(".bar")
         .data(data)
@@ -52,7 +52,7 @@ function chart1(data) {
 
     // Add the y Axis
     svg.append("g")
-        .call(d3.axisLeft(y));
+        .call(d3.axisLeft(y).tickFormat(d3.format('$,.3s')));
 
     // Add title 
     svg.append("text")
@@ -84,7 +84,7 @@ function chart1(data) {
         .attr("text-anchor", "end")
         .attr("font-size", "12px")
         .style("font-weight", "bold")
-        .text("Total Sold");
+        .text("Total Sold")
 }
 
 //bar chart showing # of transactions won and lost 
@@ -488,7 +488,7 @@ function chart5(data) {
     // append y axis to svg
     svg.append("g")
         .attr("class", "yAxis")
-        .call(d3.axisLeft(yscale).ticks(10));
+        .call(d3.axisLeft(yscale).ticks(10).tickFormat(d3.format('$,.3s')));
 
     // append the line 
     svg.append("path")
