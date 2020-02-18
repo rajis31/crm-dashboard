@@ -1,29 +1,4 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+This is a dashboard showing various trends by salesperson such as % goal met, # of deals won and lost, and other metrics. This project was built using Python 3, Flask, D3.JS, and MySQL.
+Users also have the ability to send data back to the server and charts update upon refresh. This project has been added as a app component to the portfolio-ste project so it is live. 
