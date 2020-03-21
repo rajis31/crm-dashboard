@@ -13,6 +13,7 @@ import datetime as dt
 
 # Find the base directory of app.py
 BASE_DIR = os.path.dirname(os.path.abspath(__name__))
+print(BASE_DIR)
 
 # Import database class from backend folder
 os.chdir(os.path.join(BASE_DIR,"backend"))
